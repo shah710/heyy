@@ -13,7 +13,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      background: linear-gradient(135deg, #ff6a88, #ff99ac);
       font-family: 'Poppins', sans-serif;
     }
 
@@ -21,16 +21,16 @@
       background: white;
       padding: 40px 30px;
       border-radius: 25px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.3);
       text-align: center;
       width: 90%;
-      max-width: 360px;
+      max-width: 380px;
       animation: pop 0.6s ease;
     }
 
     h1 {
       color: #ff4d6d;
-      margin-bottom: 25px;
+      min-height: 80px;
     }
 
     button {
@@ -41,12 +41,13 @@
       font-size: 18px;
       border-radius: 40px;
       cursor: pointer;
+      margin-top: 20px;
       transition: transform 0.2s, box-shadow 0.2s;
     }
 
     button:hover {
       transform: scale(1.08);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
     }
 
     .hidden {
@@ -54,7 +55,7 @@
     }
 
     @keyframes pop {
-      from { transform: scale(0.8); opacity: 0; }
+      from { transform: scale(0.85); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
 
@@ -68,33 +69,63 @@
     }
 
     @keyframes floatUp {
-      from {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-      }
-      to {
-        transform: translateY(-110vh) scale(1.5);
-        opacity: 0;
-      }
+      from { transform: translateY(0) scale(1); opacity: 1; }
+      to { transform: translateY(-120vh) scale(1.6); opacity: 0; }
     }
   </style>
 </head>
 <body>
 
-  <div class="card" id="question">
-    <h1>Do you love me? 💕</h1>
-    <button onclick="sayYes()">Yes ❤️</button>
-  </div>
+  <!-- Background music -->
+  <audio id="music" loop>
+    <source src="https://cdn.pixabay.com/audio/2022/10/30/audio_28c8b1d7f3.mp3" type="audio/mpeg">
+  </audio>
 
-  <div class="card hidden" id="answer">
-    <h1>I love you moree Maddu 💖🥹</h1>
+  <div class="card" id="card">
+    <h1 id="text">Do you love me? 💕</h1>
+    <button id="actionBtn" onclick="startLove()">Yes ❤️</button>
   </div>
 
   <script>
-    function sayYes() {
-      document.getElementById("question").classList.add("hidden");
-      document.getElementById("answer").classList.remove("hidden");
+    const messages = [
+      "I knew it 🥹💖",
+      "But listen carefully...",
+      "I love you moree Maduuuuuu 💕",
+      "Every single day 🌸",
+      "You are my favorite person 😌",
+      "Always. Forever. You ❤️"
+    ];
+
+    let messageIndex = 0;
+    const textEl = document.getElementById("text");
+    const btn = document.getElementById("actionBtn");
+    const music = document.getElementById("music");
+
+    function startLove() {
+      music.play();
+      btn.innerText = "Next 💖";
       startHearts();
+      showMessage();
+      btn.onclick = showMessage;
+    }
+
+    function showMessage() {
+      if (messageIndex >= messages.length) {
+        btn.classList.add("hidden");
+        return;
+      }
+      typeText(messages[messageIndex]);
+      messageIndex++;
+    }
+
+    function typeText(message) {
+      let i = 0;
+      textEl.innerText = "";
+      const typing = setInterval(() => {
+        textEl.innerText += message.charAt(i);
+        i++;
+        if (i === message.length) clearInterval(typing);
+      }, 60);
     }
 
     function startHearts() {
@@ -105,10 +136,7 @@
         heart.style.left = Math.random() * 100 + "vw";
         heart.style.animationDuration = (4 + Math.random() * 3) + "s";
         document.body.appendChild(heart);
-
-        setTimeout(() => {
-          heart.remove();
-        }, 7000);
+        setTimeout(() => heart.remove(), 7000);
       }, 300);
     }
   </script>
