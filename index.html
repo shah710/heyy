@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,23 +22,8 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-body::before {
-  content: "";
-  position: absolute;
-  width: 650px;
-  height: 650px;
-  background: radial-gradient(circle, rgba(255,255,255,0.35), transparent 70%);
-  animation: glow 8s infinite alternate;
-}
-
-@keyframes glow {
-  from { transform: translate(-120px, -90px); }
-  to { transform: translate(140px, 120px); }
-}
-
 .card {
-  position: relative;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255,255,255,0.6);
   backdrop-filter: blur(18px);
   padding: 48px 38px;
   border-radius: 32px;
@@ -45,47 +31,39 @@ body::before {
   text-align: center;
   width: 92%;
   max-width: 430px;
-  animation: cardIn 0.9s ease;
   z-index: 2;
-}
-
-@keyframes cardIn {
-  from { transform: scale(0.85) translateY(50px); opacity: 0; }
-  to { transform: scale(1) translateY(0); opacity: 1; }
 }
 
 h1 {
   color: #ff4f81;
-  font-weight: 500;
-  line-height: 1.45;
-  min-height: 100px;
+  min-height: 90px;
   white-space: pre-wrap;
 }
 
-.sub {
-  font-size: 14px;
-  color: #777;
-  margin-top: 10px;
+.buttons {
+  margin-top: 25px;
+  display: none;
+  gap: 15px;
+  justify-content: center;
 }
 
 button {
-  margin-top: 30px;
-  padding: 16px 46px;
-  font-size: 18px;
-  border-radius: 50px;
+  padding: 14px 36px;
+  font-size: 17px;
+  border-radius: 40px;
   border: none;
-  background: linear-gradient(135deg, #ff4f81, #ff7eb3);
-  color: white;
   cursor: pointer;
   font-weight: 500;
-  letter-spacing: 0.5px;
-  box-shadow: 0 14px 34px rgba(255,79,129,0.45);
-  transition: all 0.3s ease;
 }
 
-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 20px 45px rgba(255,79,129,0.55);
+#yesBtn {
+  background: linear-gradient(135deg, #ff4f81, #ff7eb3);
+  color: white;
+}
+
+#noBtn {
+  background: #ddd;
+  position: absolute;
 }
 
 .hidden { display: none; }
@@ -114,10 +92,6 @@ button:hover {
 }
 
 @keyframes explode {
-  from {
-    transform: translate(0, 0) scale(1);
-    opacity: 1;
-  }
   to {
     transform: translate(var(--x), var(--y)) scale(0.2);
     opacity: 0;
@@ -132,13 +106,22 @@ button:hover {
 </audio>
 
 <div class="card">
-  <h1 id="text">Do you love me? 💕</h1>
-  <div class="sub" id="sub">Only one answer feels right 😌</div>
-  <button id="btn" onclick="start()">Yes ❤️</button>
+  <h1 id="text"></h1>
+
+  <div class="buttons" id="buttons">
+    <button id="yesBtn">Yes ❤️</button>
+    <button id="noBtn">No 🙃</button>
+  </div>
 </div>
 
 <script>
-const messages = [
+const introTexts = [
+  "Hey… 👀",
+  "I have something to ask you…",
+  "Be honest 😌"
+];
+
+const loveTexts = [
   "I knew it 🥹💖",
   "Tui dekhi dushto 😏",
   "Tui bhalo hoye ja 🥺",
@@ -150,50 +133,68 @@ const messages = [
   "But for a thousand years… and more ❤️"
 ];
 
-let msgIndex = 0;
-let typingInterval = null;
+let introIndex = 0;
+let loveIndex = 0;
 
 const text = document.getElementById("text");
-const sub = document.getElementById("sub");
-const btn = document.getElementById("btn");
+const buttons = document.getElementById("buttons");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
 const music = document.getElementById("music");
 
-function start() {
-  if (music) {
-    music.volume = 0.5;
-    music.play().catch(() => {});
-  }
-  sub.classList.add("hidden");
-  btn.innerText = "Next 💖";
-  btn.onclick = nextMessage;
-  startFloating();
-  nextMessage();
-}
-
-function nextMessage() {
-  if (typingInterval) clearInterval(typingInterval);
-
-  if (msgIndex >= messages.length) {
-    btn.classList.add("hidden");
-    startFireworks(); // 🎆 FINAL TOUCH
+/* PHASE 1: auto intro text */
+function showIntro() {
+  if (introIndex >= introTexts.length) {
+    buttons.style.display = "flex";
+    positionNoButton();
     return;
   }
-  typeText(messages[msgIndex]);
-  msgIndex++;
+  text.textContent = introTexts[introIndex];
+  introIndex++;
+  setTimeout(showIntro, 2500);
+}
+
+/* NO button runs away */
+function positionNoButton() {
+  noBtn.style.left = Math.random() * (window.innerWidth - 80) + "px";
+  noBtn.style.top = Math.random() * (window.innerHeight - 40) + "px";
+}
+
+noBtn.addEventListener("mouseenter", positionNoButton);
+noBtn.addEventListener("click", positionNoButton);
+
+/* YES clicked */
+yesBtn.addEventListener("click", () => {
+  buttons.classList.add("hidden");
+  startLove();
+});
+
+/* PHASE 3: love messages auto-play */
+function startLove() {
+  music.volume = 0.5;
+  music.play().catch(() => {});
+  startFloating();
+  showLoveText();
+}
+
+function showLoveText() {
+  if (loveIndex >= loveTexts.length) {
+    startFireworks();
+    return;
+  }
+  typeText(loveTexts[loveIndex]);
+  loveIndex++;
+  setTimeout(showLoveText, 2800);
 }
 
 function typeText(message) {
-  let charIndex = 0;
+  let i = 0;
   text.textContent = "";
-
-  typingInterval = setInterval(() => {
-    text.textContent += message[charIndex];
-    charIndex++;
-    if (charIndex >= message.length) {
-      clearInterval(typingInterval);
-      typingInterval = null;
-    }
-  }, 65);
+  const interval = setInterval(() => {
+    text.textContent += message[i];
+    i++;
+    if (i >= message.length) clearInterval(interval);
+  }, 60);
 }
 
 function startFloating() {
@@ -204,34 +205,30 @@ function startFloating() {
     el.style.left = Math.random() * 100 + "vw";
     el.style.animationDuration = (5 + Math.random() * 3) + "s";
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), 8500);
-  }, 380);
+    setTimeout(() => el.remove(), 8000);
+  }, 350);
 }
 
-/* fireworks logic */
 function startFireworks() {
-  const colors = ["#ff4f81", "#ffd1dc", "#ff9a9e", "#ffffff"];
-
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 6; i++) {
     setTimeout(() => {
-      const centerX = Math.random() * window.innerWidth;
-      const centerY = Math.random() * window.innerHeight * 0.5;
-
       for (let j = 0; j < 30; j++) {
         const fw = document.createElement("div");
         fw.className = "firework";
-        fw.style.background = colors[Math.floor(Math.random() * colors.length)];
-        fw.style.left = centerX + "px";
-        fw.style.top = centerY + "px";
-        fw.style.setProperty("--x", (Math.random() * 200 - 100) + "px");
-        fw.style.setProperty("--y", (Math.random() * 200 - 100) + "px");
-
+        fw.style.background = ["#ff4f81","#fff","#ffd1dc"][Math.floor(Math.random()*3)];
+        fw.style.left = Math.random()*window.innerWidth+"px";
+        fw.style.top = Math.random()*window.innerHeight*0.5+"px";
+        fw.style.setProperty("--x",(Math.random()*200-100)+"px");
+        fw.style.setProperty("--y",(Math.random()*200-100)+"px");
         document.body.appendChild(fw);
-        setTimeout(() => fw.remove(), 1200);
+        setTimeout(()=>fw.remove(),1200);
       }
-    }, i * 700);
+    }, i*700);
   }
 }
+
+/* start everything */
+showIntro();
 </script>
 
 </body>
