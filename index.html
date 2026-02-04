@@ -1,158 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Just One Question ❤️</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Just One Question ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #ff5f7e, #ff9a9e);
-      font-family: 'Poppins', sans-serif;
-    }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-    .card {
-      background: white;
-      padding: 42px 32px;
-      border-radius: 28px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.3);
-      text-align: center;
-      width: 92%;
-      max-width: 400px;
-      animation: pop 0.7s ease;
-    }
+* { box-sizing: border-box; }
 
-    h1 {
-      color: #ff3e6c;
-      min-height: 90px;
-      line-height: 1.4;
-    }
+body {
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+  font-family: 'Poppins', sans-serif;
+}
 
-    .hint {
-      font-size: 14px;
-      color: #999;
-      margin-top: 8px;
-    }
+body::before {
+  content: "";
+  position: absolute;
+  width: 650px;
+  height: 650px;
+  background: radial-gradient(circle, rgba(255,255,255,0.35), transparent 70%);
+  animation: glow 8s infinite alternate;
+}
 
-    button {
-      background: linear-gradient(135deg, #ff3e6c, #ff7a9c);
-      color: white;
-      border: none;
-      padding: 14px 40px;
-      font-size: 18px;
-      border-radius: 45px;
-      cursor: pointer;
-      margin-top: 24px;
-      transition: all 0.25s ease;
-    }
+@keyframes glow {
+  from { transform: translate(-120px, -90px); }
+  to { transform: translate(140px, 120px); }
+}
 
-    button:hover {
-      transform: scale(1.1);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-    }
+.card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(18px);
+  padding: 48px 38px;
+  border-radius: 32px;
+  box-shadow: 0 35px 80px rgba(0,0,0,0.25);
+  text-align: center;
+  width: 92%;
+  max-width: 430px;
+  animation: cardIn 0.9s ease;
+  z-index: 2;
+}
 
-    .hidden {
-      display: none;
-    }
+@keyframes cardIn {
+  from { transform: scale(0.85) translateY(50px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
 
-    @keyframes pop {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
+h1 {
+  color: #ff4f81;
+  font-weight: 500;
+  line-height: 1.45;
+  min-height: 100px;
+  white-space: pre-wrap; /* ✅ preserves spaces */
+}
 
-    /* Hearts */
-    .heart {
-      position: absolute;
-      bottom: -20px;
-      font-size: 24px;
-      animation: floatUp linear infinite;
-      opacity: 0.9;
-    }
+.sub {
+  font-size: 14px;
+  color: #777;
+  margin-top: 10px;
+}
 
-    @keyframes floatUp {
-      from { transform: translateY(0) scale(1); }
-      to { transform: translateY(-120vh) scale(1.6); opacity: 0; }
-    }
-  </style>
+button {
+  margin-top: 30px;
+  padding: 16px 46px;
+  font-size: 18px;
+  border-radius: 50px;
+  border: none;
+  background: linear-gradient(135deg, #ff4f81, #ff7eb3);
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  box-shadow: 0 14px 34px rgba(255,79,129,0.45);
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 20px 45px rgba(255,79,129,0.55);
+}
+
+.hidden { display: none; }
+
+.float {
+  position: absolute;
+  bottom: -20px;
+  font-size: 22px;
+  animation: floatUp linear infinite;
+  opacity: 0.9;
+}
+
+@keyframes floatUp {
+  from { transform: translateY(0) scale(1); }
+  to { transform: translateY(-120vh) scale(1.6); opacity: 0; }
+}
+</style>
 </head>
 <body>
 
-  <!-- Background Music -->
-  <audio id="music" loop>
-    <source src="thousand-years.mp3" type="audio/mpeg">
-  </audio>
+<audio id="music" loop>
+  <source src="thousand-years.mp3" type="audio/mpeg">
+</audio>
 
-  <div class="card">
-    <h1 id="text">Do you love me? 💕</h1>
-    <div class="hint" id="hint">Only one correct answer 😌</div>
-    <button id="btn" onclick="start()">Yes ❤️</button>
-  </div>
+<div class="card">
+  <h1 id="text">Do you love me? 💕</h1>
+  <div class="sub" id="sub">Only one answer feels right 😌</div>
+  <button id="btn" onclick="start()">Yes ❤️</button>
+</div>
 
-  <script>
-    const messages = [
-      "I knew it 🥹💖",
-      "Tui dekhi dushto 😏",
-      "Tui bhalo hoye ja 🥺",
-      "Kire shundori hashi dichis 😌✨",
-      "Every time you smile… my heart skips 💓",
-      "I love you moree Maddu 💕",
-      "Not today.",
-      "Not tomorrow.",
-      "But for a thousand years… and more ❤️"
-    ];
+<script>
+const messages = [
+  "I knew it 🥹💖",
+  "Tui dekhi dushto 😏",
+  "Tui bhalo hoye ja 🥺",
+  "Kire shundori hashi dichis 😌✨",
+  "Every time you smile, my world feels lighter 🌸",
+  "I love you moree Maddu 💕",
+  "Not today.",
+  "Not tomorrow.",
+  "But for a thousand years… and more ❤️"
+];
 
-    let index = 0;
-    const text = document.getElementById("text");
-    const btn = document.getElementById("btn");
-    const hint = document.getElementById("hint");
-    const music = document.getElementById("music");
+let msgIndex = 0;
+let typingInterval = null;
 
-    function start() {
-      music.play();
-      hint.classList.add("hidden");
-      btn.innerText = "Next 💖";
-      startHearts();
-      showMessage();
-      btn.onclick = showMessage;
+const text = document.getElementById("text");
+const sub = document.getElementById("sub");
+const btn = document.getElementById("btn");
+const music = document.getElementById("music");
+
+function start() {
+  if (music) {
+    music.volume = 0.5;
+    music.play().catch(() => {});
+  }
+  sub.classList.add("hidden");
+  btn.innerText = "Next 💖";
+  btn.onclick = nextMessage;
+  startFloating();
+  nextMessage();
+}
+
+function nextMessage() {
+  if (typingInterval) clearInterval(typingInterval);
+
+  if (msgIndex >= messages.length) {
+    btn.classList.add("hidden");
+    return;
+  }
+  typeText(messages[msgIndex]);
+  msgIndex++;
+}
+
+function typeText(message) {
+  let charIndex = 0;
+  text.textContent = "";
+
+  typingInterval = setInterval(() => {
+    text.textContent += message[charIndex]; // ✅ spaces preserved
+    charIndex++;
+    if (charIndex >= message.length) {
+      clearInterval(typingInterval);
+      typingInterval = null;
     }
+  }, 65);
+}
 
-    function showMessage() {
-      if (index >= messages.length) {
-        btn.classList.add("hidden");
-        return;
-      }
-      typeText(messages[index]);
-      index++;
-    }
-
-    function typeText(message) {
-      let i = 0;
-      text.innerText = "";
-      const typing = setInterval(() => {
-        text.innerText += message.charAt(i);
-        i++;
-        if (i === message.length) clearInterval(typing);
-      }, 55);
-    }
-
-    function startHearts() {
-      setInterval(() => {
-        const heart = document.createElement("div");
-        heart.className = "heart";
-        heart.innerHTML = Math.random() > 0.5 ? "💖" : "✨";
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.animationDuration = (4 + Math.random() * 3) + "s";
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 7000);
-      }, 280);
-    }
-  </script>
+function startFloating() {
+  setInterval(() => {
+    const el = document.createElement("div");
+    el.className = "float";
+    el.innerHTML = Math.random() > 0.5 ? "💖" : "✨";
+    el.style.left = Math.random() * 100 + "vw";
+    el.style.animationDuration = (5 + Math.random() * 3) + "s";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 8500);
+  }, 380);
+}
+</script>
 
 </body>
 </html>
