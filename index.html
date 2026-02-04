@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Just One Question ❤️</title>
+<title>❤️</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -25,26 +24,26 @@ body {
 .card {
   background: rgba(255,255,255,0.6);
   backdrop-filter: blur(18px);
-  padding: 48px 38px;
+  padding: 50px 40px;
   border-radius: 32px;
   box-shadow: 0 35px 80px rgba(0,0,0,0.25);
   text-align: center;
   width: 92%;
   max-width: 430px;
-  z-index: 2;
 }
 
 h1 {
   color: #ff4f81;
   min-height: 90px;
   white-space: pre-wrap;
+  transition: opacity 1s ease;
 }
 
 .buttons {
-  margin-top: 25px;
+  margin-top: 30px;
   display: none;
-  gap: 15px;
   justify-content: center;
+  gap: 20px;
 }
 
 button {
@@ -62,7 +61,7 @@ button {
 }
 
 #noBtn {
-  background: #ddd;
+  background: #eee;
   position: absolute;
 }
 
@@ -78,8 +77,10 @@ button {
 }
 
 @keyframes floatUp {
-  from { transform: translateY(0) scale(1); }
-  to { transform: translateY(-120vh) scale(1.6); opacity: 0; }
+  to {
+    transform: translateY(-120vh) scale(1.6);
+    opacity: 0;
+  }
 }
 
 /* fireworks */
@@ -115,10 +116,11 @@ button {
 </div>
 
 <script>
+/* TEXT CONTENT */
 const introTexts = [
   "Hey… 👀",
   "I have something to ask you…",
-  "Be honest 😌"
+  "Please be honest 😌"
 ];
 
 const loveTexts = [
@@ -133,35 +135,43 @@ const loveTexts = [
   "But for a thousand years… and more ❤️"
 ];
 
-let introIndex = 0;
-let loveIndex = 0;
-
 const text = document.getElementById("text");
 const buttons = document.getElementById("buttons");
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
 const music = document.getElementById("music");
 
-/* PHASE 1: auto intro text */
+let introIndex = 0;
+let loveIndex = 0;
+
+/* PHASE 1 – AUTO INTRO */
 function showIntro() {
   if (introIndex >= introTexts.length) {
-    buttons.style.display = "flex";
-    positionNoButton();
+    showQuestion();
     return;
   }
-  text.textContent = introTexts[introIndex];
+
+  typeText(introTexts[introIndex]);
   introIndex++;
-  setTimeout(showIntro, 2500);
+
+  setTimeout(showIntro, 5000); // ⏱️ slower
+}
+
+/* PHASE 2 – QUESTION + BUTTONS */
+function showQuestion() {
+  typeText("Do you love me? 💕");
+  buttons.style.display = "flex";
+  moveNoButton();
 }
 
 /* NO button runs away */
-function positionNoButton() {
-  noBtn.style.left = Math.random() * (window.innerWidth - 80) + "px";
-  noBtn.style.top = Math.random() * (window.innerHeight - 40) + "px";
+function moveNoButton() {
+  noBtn.style.left = Math.random() * (window.innerWidth - 100) + "px";
+  noBtn.style.top = Math.random() * (window.innerHeight - 60) + "px";
 }
 
-noBtn.addEventListener("mouseenter", positionNoButton);
-noBtn.addEventListener("click", positionNoButton);
+noBtn.addEventListener("mouseenter", moveNoButton);
+noBtn.addEventListener("click", moveNoButton);
 
 /* YES clicked */
 yesBtn.addEventListener("click", () => {
@@ -169,11 +179,11 @@ yesBtn.addEventListener("click", () => {
   startLove();
 });
 
-/* PHASE 3: love messages auto-play */
+/* PHASE 3 – LOVE SEQUENCE */
 function startLove() {
   music.volume = 0.5;
   music.play().catch(() => {});
-  startFloating();
+  startHearts();
   showLoveText();
 }
 
@@ -182,22 +192,27 @@ function showLoveText() {
     startFireworks();
     return;
   }
+
   typeText(loveTexts[loveIndex]);
   loveIndex++;
-  setTimeout(showLoveText, 2800);
+
+  setTimeout(showLoveText, 4500); // ⏱️ slower & emotional
 }
 
+/* TYPING */
 function typeText(message) {
   let i = 0;
   text.textContent = "";
+
   const interval = setInterval(() => {
     text.textContent += message[i];
     i++;
     if (i >= message.length) clearInterval(interval);
-  }, 60);
+  }, 65);
 }
 
-function startFloating() {
+/* HEARTS */
+function startHearts() {
   setInterval(() => {
     const el = document.createElement("div");
     el.className = "float";
@@ -206,9 +221,10 @@ function startFloating() {
     el.style.animationDuration = (5 + Math.random() * 3) + "s";
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 8000);
-  }, 350);
+  }, 400);
 }
 
+/* FIREWORKS */
 function startFireworks() {
   for (let i = 0; i < 6; i++) {
     setTimeout(() => {
@@ -223,11 +239,11 @@ function startFireworks() {
         document.body.appendChild(fw);
         setTimeout(()=>fw.remove(),1200);
       }
-    }, i*700);
+    }, i*800);
   }
 }
 
-/* start everything */
+/* START */
 showIntro();
 </script>
 
