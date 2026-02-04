@@ -59,7 +59,7 @@ h1 {
   font-weight: 500;
   line-height: 1.45;
   min-height: 100px;
-  white-space: pre-wrap; /* ✅ preserves spaces */
+  white-space: pre-wrap;
 }
 
 .sub {
@@ -90,6 +90,7 @@ button:hover {
 
 .hidden { display: none; }
 
+/* floating hearts */
 .float {
   position: absolute;
   bottom: -20px;
@@ -101,6 +102,26 @@ button:hover {
 @keyframes floatUp {
   from { transform: translateY(0) scale(1); }
   to { transform: translateY(-120vh) scale(1.6); opacity: 0; }
+}
+
+/* fireworks */
+.firework {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: explode 1.2s ease-out forwards;
+}
+
+@keyframes explode {
+  from {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--x), var(--y)) scale(0.2);
+    opacity: 0;
+  }
 }
 </style>
 </head>
@@ -154,6 +175,7 @@ function nextMessage() {
 
   if (msgIndex >= messages.length) {
     btn.classList.add("hidden");
+    startFireworks(); // 🎆 FINAL TOUCH
     return;
   }
   typeText(messages[msgIndex]);
@@ -165,7 +187,7 @@ function typeText(message) {
   text.textContent = "";
 
   typingInterval = setInterval(() => {
-    text.textContent += message[charIndex]; // ✅ spaces preserved
+    text.textContent += message[charIndex];
     charIndex++;
     if (charIndex >= message.length) {
       clearInterval(typingInterval);
@@ -184,6 +206,31 @@ function startFloating() {
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 8500);
   }, 380);
+}
+
+/* fireworks logic */
+function startFireworks() {
+  const colors = ["#ff4f81", "#ffd1dc", "#ff9a9e", "#ffffff"];
+
+  for (let i = 0; i < 8; i++) {
+    setTimeout(() => {
+      const centerX = Math.random() * window.innerWidth;
+      const centerY = Math.random() * window.innerHeight * 0.5;
+
+      for (let j = 0; j < 30; j++) {
+        const fw = document.createElement("div");
+        fw.className = "firework";
+        fw.style.background = colors[Math.floor(Math.random() * colors.length)];
+        fw.style.left = centerX + "px";
+        fw.style.top = centerY + "px";
+        fw.style.setProperty("--x", (Math.random() * 200 - 100) + "px");
+        fw.style.setProperty("--y", (Math.random() * 200 - 100) + "px");
+
+        document.body.appendChild(fw);
+        setTimeout(() => fw.remove(), 1200);
+      }
+    }, i * 700);
+  }
 }
 </script>
 
